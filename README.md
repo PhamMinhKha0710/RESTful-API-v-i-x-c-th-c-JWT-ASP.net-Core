@@ -1,26 +1,37 @@
-# Hướng dẫn xây dựng RESTful API với JWT Authentication sử dụng ASP.NET Core 9
+# 🔐 RESTful API với JWT Authentication - ASP.NET Core 9
 
-Tài liệu này hướng dẫn chi tiết cách xây dựng một RESTful API với xác thực JWT (JSON Web Token) sử dụng ASP.NET Core 9.
+<div align="center">
 
-## Các tính năng
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-9.0-blue)
+![JWT](https://img.shields.io/badge/JWT-Authentication-orange)
+![C#](https://img.shields.io/badge/C%23-11.0-brightgreen)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-- Xác thực dựa trên JWT token
-- Cơ chế refresh token
-- Đăng ký và đăng nhập người dùng
-- Phân quyền theo vai trò (role-based authorization)
-- API endpoints dành riêng cho Admin và User
-- Bảo vệ API endpoints
-- Tài liệu Swagger/OpenAPI
-- Hỗ trợ token không cần tiền tố "Bearer"
+</div>
 
-## Yêu cầu
+## 📋 Tổng quan
+
+Tài liệu này hướng dẫn chi tiết cách xây dựng RESTful API với xác thực JWT (JSON Web Token) sử dụng ASP.NET Core 9. API này cung cấp hệ thống xác thực người dùng hoàn chỉnh với phân quyền dựa trên vai trò và cơ chế refresh token.
+
+## ✨ Tính năng
+
+- ✅ Xác thực dựa trên JWT token
+- ✅ Cơ chế refresh token
+- ✅ Đăng ký và đăng nhập người dùng
+- ✅ Phân quyền theo vai trò (role-based authorization)
+- ✅ API endpoints dành riêng cho Admin và User
+- ✅ Bảo vệ API endpoints
+- ✅ Tài liệu Swagger/OpenAPI
+- ✅ Hỗ trợ token không cần tiền tố "Bearer"
+
+## 🛠️ Yêu cầu
 
 - .NET 9 SDK
 - Visual Studio 2022 hoặc bất kỳ trình soạn thảo mã nào (VS Code, v.v.)
 
-## Hướng dẫn chi tiết xây dựng từng bước
+## 🚀 Hướng dẫn chi tiết xây dựng từng bước
 
-### 1. Tạo dự án ASP.NET Core Web API
+### 1️⃣ Tạo dự án ASP.NET Core Web API
 
 ```bash
 # Tạo dự án mới
@@ -30,7 +41,7 @@ dotnet new webapi -n JwtRestfulApi
 cd JwtRestfulApi
 ```
 
-### 2. Cài đặt các package cần thiết
+### 2️⃣ Cài đặt các package cần thiết
 
 ```bash
 # Package để xác thực JWT
@@ -40,7 +51,7 @@ dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
 dotnet add package Swashbuckle.AspNetCore
 ```
 
-### 3. Tạo cấu trúc thư mục
+### 3️⃣ Tạo cấu trúc thư mục
 
 ```bash
 # Tạo các thư mục cần thiết
@@ -49,9 +60,10 @@ mkdir Services
 mkdir Controllers
 ```
 
-### 4. Xây dựng các model
+### 4️⃣ Xây dựng các model
 
-#### 4.1 User Model (Models/User.cs)
+<details>
+<summary><b>User Model (Models/User.cs)</b></summary>
 
 ```csharp
 using System.Text.Json.Serialization;
@@ -72,8 +84,10 @@ namespace JwtRestfulApi.Models
     }
 }
 ```
+</details>
 
-#### 4.2 LoginModel (Models/LoginModel.cs)
+<details>
+<summary><b>LoginModel (Models/LoginModel.cs)</b></summary>
 
 ```csharp
 using System.ComponentModel.DataAnnotations;
@@ -90,8 +104,10 @@ namespace JwtRestfulApi.Models
     }
 }
 ```
+</details>
 
-#### 4.3 RegisterModel (Models/RegisterModel.cs)
+<details>
+<summary><b>RegisterModel (Models/RegisterModel.cs)</b></summary>
 
 ```csharp
 using System.ComponentModel.DataAnnotations;
@@ -117,8 +133,10 @@ namespace JwtRestfulApi.Models
     }
 }
 ```
+</details>
 
-#### 4.4 TokenResponse (Models/TokenResponse.cs)
+<details>
+<summary><b>TokenResponse (Models/TokenResponse.cs)</b></summary>
 
 ```csharp
 namespace JwtRestfulApi.Models
@@ -131,8 +149,10 @@ namespace JwtRestfulApi.Models
     }
 }
 ```
+</details>
 
-#### 4.5 RefreshToken (Models/RefreshToken.cs)
+<details>
+<summary><b>RefreshToken (Models/RefreshToken.cs)</b></summary>
 
 ```csharp
 namespace JwtRestfulApi.Models
@@ -148,10 +168,12 @@ namespace JwtRestfulApi.Models
     }
 }
 ```
+</details>
 
-### 5. Cài đặt các service
+### 5️⃣ Cài đặt các service
 
-#### 5.1 Interface JWT Service (Services/IJwtService.cs)
+<details>
+<summary><b>Interface JWT Service (Services/IJwtService.cs)</b></summary>
 
 ```csharp
 using JwtRestfulApi.Models;
@@ -167,8 +189,10 @@ namespace JwtRestfulApi.Services
     }
 }
 ```
+</details>
 
-#### 5.2 Triển khai JWT Service (Services/JwtService.cs)
+<details>
+<summary><b>Triển khai JWT Service (Services/JwtService.cs)</b></summary>
 
 ```csharp
 using JwtRestfulApi.Models;
@@ -230,8 +254,6 @@ namespace JwtRestfulApi.Services
             };
         }
         
-        // Các phương thức khác được triển khai...
-        
         public RefreshToken GenerateRefreshToken()
         {
             // Tạo token ngẫu nhiên an toàn
@@ -247,6 +269,8 @@ namespace JwtRestfulApi.Services
             };
         }
         
+        // Các phương thức khác được triển khai...
+        
         private static void RemoveOldRefreshTokens(User user)
         {
             // Giữ lại các refresh token còn hiệu lực hoặc hết hiệu lực chưa đến 2 ngày
@@ -254,13 +278,13 @@ namespace JwtRestfulApi.Services
                 .Where(r => r.IsActive || r.Created.AddDays(2) >= DateTime.Now)
                 .ToList();
         }
-        
-        // Các phương thức khác...
     }
 }
 ```
+</details>
 
-#### 5.3 Interface User Service (Services/IUserService.cs)
+<details>
+<summary><b>Interface User Service (Services/IUserService.cs)</b></summary>
 
 ```csharp
 using JwtRestfulApi.Models;
@@ -276,8 +300,10 @@ namespace JwtRestfulApi.Services
     }
 }
 ```
+</details>
 
-#### 5.4 Triển khai User Service (Services/UserService.cs)
+<details>
+<summary><b>Triển khai User Service (Services/UserService.cs)</b></summary>
 
 ```csharp
 using JwtRestfulApi.Models;
@@ -356,10 +382,12 @@ namespace JwtRestfulApi.Services
     }
 }
 ```
+</details>
 
-### 6. Xây dựng các controller
+### 6️⃣ Xây dựng các controller
 
-#### 6.1 Auth Controller (Controllers/AuthController.cs)
+<details>
+<summary><b>Auth Controller (Controllers/AuthController.cs)</b></summary>
 
 ```csharp
 using JwtRestfulApi.Models;
@@ -436,8 +464,10 @@ namespace JwtRestfulApi.Controllers
     }
 }
 ```
+</details>
 
-#### 6.2 Users Controller (Controllers/UsersController.cs)
+<details>
+<summary><b>Users Controller (Controllers/UsersController.cs)</b></summary>
 
 ```csharp
 using JwtRestfulApi.Models;
@@ -478,7 +508,6 @@ namespace JwtRestfulApi.Controllers
                 return NotFound(new { message = "Không tìm thấy người dùng" });
             }
 
-            // Trả về thông tin người dùng không có dữ liệu nhạy cảm
             return Ok(new
             {
                 user.Id,
@@ -507,7 +536,6 @@ namespace JwtRestfulApi.Controllers
                 return NotFound(new { message = "Không tìm thấy người dùng" });
             }
 
-            // Mô phỏng truy xuất dữ liệu cá nhân
             return Ok(new
             {
                 userId = user.Id,
@@ -545,8 +573,10 @@ namespace JwtRestfulApi.Controllers
     }
 }
 ```
+</details>
 
-#### 6.3 Admin Controller (Controllers/AdminController.cs)
+<details>
+<summary><b>Admin Controller (Controllers/AdminController.cs)</b></summary>
 
 ```csharp
 using JwtRestfulApi.Models;
@@ -607,8 +637,9 @@ namespace JwtRestfulApi.Controllers
     }
 }
 ```
+</details>
 
-### 7. Cấu hình JWT trong appsettings.json
+### 7️⃣ Cấu hình JWT trong appsettings.json
 
 ```json
 {
@@ -627,7 +658,10 @@ namespace JwtRestfulApi.Controllers
 }
 ```
 
-### 8. Cấu hình Startup trong Program.cs
+### 8️⃣ Cấu hình Startup trong Program.cs
+
+<details>
+<summary><b>Program.cs</b></summary>
 
 ```csharp
 using JwtRestfulApi.Services;
@@ -742,95 +776,91 @@ app.MapControllers();
 
 app.Run();
 ```
+</details>
 
-## API Endpoints
+## 📮 API Endpoints
 
-### Xác thực
+### 🔑 Xác thực
 
-- **POST /api/auth/register** - Đăng ký người dùng mới
-  - Request body: `{ "username": "string", "email": "string", "password": "string", "confirmPassword": "string" }`
+| Phương thức | Endpoint | Mô tả | Yêu cầu |
+|------------|----------|-------|---------|
+| **POST** | `/api/auth/register` | Đăng ký người dùng mới | Không cần xác thực |
+| **POST** | `/api/auth/login` | Đăng nhập và nhận JWT token | Không cần xác thực |
+| **POST** | `/api/auth/refresh-token` | Làm mới JWT token đã hết hạn | Không cần xác thực |
 
-- **POST /api/auth/login** - Đăng nhập và nhận JWT token
-  - Request body: `{ "username": "string", "password": "string" }`
-  - Response: `{ "token": "string", "refreshToken": "string", "expiration": "datetime" }`
+### 👤 Endpoints cho người dùng
 
-- **POST /api/auth/refresh-token** - Làm mới JWT token đã hết hạn
-  - Request body: `{ "token": "string", "refreshToken": "string" }`
-  - Response: `{ "token": "string", "refreshToken": "string", "expiration": "datetime" }`
+| Phương thức | Endpoint | Mô tả | Yêu cầu |
+|------------|----------|-------|---------|
+| **GET** | `/api/users/profile` | Lấy hồ sơ người dùng hiện tại | Xác thực |
+| **GET** | `/api/users/personal-data/{id}` | Lấy dữ liệu cá nhân | Xác thực (chỉ chính người dùng hoặc Admin) |
 
-### Endpoints cho người dùng (yêu cầu xác thực)
+### 👑 Endpoints cho Admin
 
-- **GET /api/users/profile** - Lấy thông tin hồ sơ người dùng hiện tại (có sẵn cho tất cả người dùng đã xác thực)
-- **GET /api/users/basic-info** - Lấy thông tin cơ bản của người dùng (có sẵn cho tất cả người dùng đã xác thực)
-- **GET /api/users/personal-data/{id}** - Lấy dữ liệu cá nhân (chỉ có sẵn cho chính người dùng đó hoặc admin)
+| Phương thức | Endpoint | Mô tả | Yêu cầu |
+|------------|----------|-------|---------|
+| **GET** | `/api/users` | Lấy danh sách tất cả người dùng | Xác thực + vai trò Admin |
+| **GET** | `/api/users/{id}` | Lấy thông tin người dùng theo ID | Xác thực + vai trò Admin |
+| **GET** | `/api/admin/dashboard` | Lấy thống kê dashboard admin | Xác thực + vai trò Admin |
+| **GET** | `/api/admin/system-health` | Lấy thông tin sức khỏe hệ thống | Xác thực + vai trò Admin |
 
-### Endpoints cho admin (yêu cầu vai trò Admin)
-
-- **GET /api/users** - Lấy danh sách tất cả người dùng
-- **GET /api/users/{id}** - Lấy thông tin người dùng theo ID
-- **GET /api/admin/dashboard** - Lấy thống kê dashboard admin
-- **GET /api/admin/system-health** - Lấy thông tin sức khỏe hệ thống
-- **GET /api/admin/user-management** - Lấy dữ liệu quản lý người dùng
-- **POST /api/admin/simulate-action** - Mô phỏng hành động của admin
-
-### Endpoints tài nguyên (truy cập dựa trên vai trò)
-
-- **GET /api/resource/public-resources** - Có sẵn cho tất cả người dùng đã xác thực
-- **GET /api/resource/user-resources** - Có sẵn cho người dùng có vai trò "User" hoặc "Admin"
-- **GET /api/resource/admin-resources** - Chỉ có sẵn cho người dùng có vai trò "Admin"
-- **GET /api/resource/mixed-resources** - Trả về các tài nguyên khác nhau dựa trên vai trò của người dùng
-
-## Phân quyền dựa trên vai trò
+## 🔐 Phân quyền dựa trên vai trò
 
 API triển khai phân quyền dựa trên vai trò với hai vai trò chính:
 
-### Vai trò User
+### 👤 Vai trò User
 - Có thể truy cập thông tin hồ sơ của riêng mình
 - Có thể xem các tài nguyên cơ bản
 - Không thể truy cập các endpoint dành cho admin hoặc dữ liệu của người dùng khác
 
-### Vai trò Admin
+### 👑 Vai trò Admin
 - Có thể truy cập tất cả các endpoint của người dùng
 - Có thể truy cập các endpoint dành riêng cho admin
 - Có thể xem tất cả dữ liệu người dùng
 - Có quyền truy cập vào các tính năng quản lý hệ thống
 
-## Người dùng mặc định
+## ⏳ Thời gian sống của Token
 
-Để thuận tiện cho việc kiểm thử, ứng dụng đi kèm với hai người dùng được cấu hình sẵn:
+- **Access Token**: 15 phút
+- **Refresh Token**: 7 ngày
 
-- Người dùng Admin:
-  - Tên đăng nhập: admin
-  - Mật khẩu: admin
-  - Vai trò: Admin
+## 👥 Người dùng mặc định
 
-- Người dùng thông thường:
-  - Tên đăng nhập: user
-  - Mật khẩu: user
-  - Vai trò: User
+| Username | Password | Vai trò |
+|----------|----------|---------|
+| `admin` | `admin` | Admin |
+| `user` | `user` | User |
 
-## Các bước sử dụng API
+## 🚀 Các bước sử dụng API
 
 1. Đăng ký người dùng mới bằng endpoint `/api/auth/register`
 2. Đăng nhập bằng endpoint `/api/auth/login` để nhận JWT token và refresh token
 3. Sử dụng token trong header Authorization cho các endpoint được bảo vệ:
-   - Bạn có thể sử dụng một trong hai cách sau:
-     - `Authorization: Bearer {your_token}` (định dạng chuẩn)
-     - `Authorization: {your_token}` (định dạng đơn giản không có tiền tố Bearer)
+   ```
+   Authorization: Bearer {your_token}
+   ```
+   hoặc
+   ```
+   Authorization: {your_token}
+   ```
 4. Khi access token hết hạn, sử dụng endpoint `/api/auth/refresh-token` để lấy cặp token mới
-5. Truy cập các endpoint khác nhau dựa trên vai trò của bạn:
-   - Người dùng thông thường chỉ có thể truy cập các endpoint dành cho người dùng
-   - Người dùng admin có thể truy cập cả endpoint người dùng và admin
+5. Truy cập các endpoint khác nhau dựa trên vai trò của bạn
 
-## Lưu ý bảo mật
+## 🛡️ Lưu ý bảo mật
 
 - Sử dụng HTTPS trong môi trường sản xuất
 - Lưu trữ dữ liệu nhạy cảm (như JWT key) bằng cách sử dụng quản lý bí mật
-- Triển khai băm mật khẩu đúng cách (bản demo này sử dụng SHA256, nhưng trong sản xuất, nên sử dụng thuật toán an toàn hơn như BCrypt)
-- Access token có thời gian ngắn giúp cải thiện bảo mật (15 phút trong triển khai này)
+- Triển khai băm mật khẩu đúng cách (trong sản xuất, sử dụng thuật toán an toàn như BCrypt)
+- Access token có thời gian ngắn (15 phút) giúp cải thiện bảo mật
 - Refresh token được lưu trữ với bản ghi người dùng và có thể thu hồi nếu cần
 - Refresh token cũ được tự động dọn dẹp
 
-## Giấy phép
+## 📝 Giấy phép
 
-MIT 
+[MIT](LICENSE)
+
+---
+
+<div align="center">
+⭐ Được xây dựng với ASP.NET Core 9 ⭐
+</div> 
